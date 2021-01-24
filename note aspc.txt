@@ -1,0 +1,13 @@
+Right-clic on projet folder > Gérer les packages NuGet > Parcourir:
+> Microsoft.EntityFrameworkCore
+> Microsoft.EntityFrameworkCore.SqlServer
+> Microsoft.EntityFrameworkCore.Tools (for migrations)
+
+Outil > Gestionnaire de package NuGet > Console de gestionnaire de package:
+PM> Add-Migration InitialMigration
+PM> Update-Database
+PM> Add-Migration UpdateMigration
+PM> Remove-Migration
+
+
+PS : Après une migration il faut update la bdd, si la migration est une erreur on peut remove la migration

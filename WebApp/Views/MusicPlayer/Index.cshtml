@@ -1,0 +1,78 @@
+﻿@{
+    ViewData["Title"] = "Music Player";
+}
+
+<script src="https://unpkg.com/wavesurfer.js"></script>
+
+<div id="waveform"></div>
+
+<div class="controls" style="text-align:center;">
+    <button onclick="skipBackward()">Backward</button>
+
+    <button onclick="playPause()">Play/Pause</button>
+
+    <button onclick="skipForward()">Forward</button>
+
+    <button onclick="toggleMute()">Toggle Mute</button>
+</div>
+<br />
+<table style="margin-left: auto;margin-right: auto;background-color: rgba(255, 255, 255, 0.5);  ">
+    @foreach (var playlist in ViewData["playlists"] as IList<Playlist>)
+    {
+    <tr>
+        <td style="font-size:36px;">@playlist.PlaylistTitle</td>
+    </tr>
+            @foreach (var music in ViewData["musics"] as IList<Music>)
+            {
+                <tr>
+                    <td style="font-size:24px;">@music.MusicTitle</td>
+                </tr>
+                }          
+            }
+</table>
+
+<form style="text-align:center;" asp-controller="MusicPlayer" asp-action="PlaylistManagement" method="post">
+
+    <button name="delPlaylist" type="submit">Delete playlist</button>
+
+    <button name="addPlaylist" type="submit">Create playlist</button>
+</form>
+
+
+    <script>
+        // create : Create an instance, passing the container selector and options:
+        var wavesurfer = WaveSurfer.create({
+            container: '#waveform',
+            waveColor: 'violet',
+            progressColor: 'purple'
+        });
+
+        // load : Loads audio from URL via XHR
+        wavesurfer.load('/media/audio.mp3');
+
+        // on : Subscribe to some events
+        wavesurfer.on('ready', function () { // ready : When audio is loaded, decoded and the waveform drawn.
+            // load : Loads audio from URL via XHR
+            wavesurfer.load('/media/audio.mp3');
+            wavesurfer.play();
+        })
+
+        // Rewind skipLength seconds.
+        function skipBackward() {
+            wavesurfer.skipBackward();
+        }
+
+        // Plays if paused, pauses if playing.
+        function playPause() {
+            wavesurfer.playPause();
+        }
+
+        // Skip ahead skipLength seconds.
+        function skipForward() {
+            wavesurfer.skipForward();
+        }
+        // Toggles the volume on and off.
+        function toggleMute() {
+            wavesurfer.toggleMute();
+        }
+    </script>

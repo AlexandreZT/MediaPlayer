@@ -1,0 +1,98 @@
+﻿@using Microsoft.AspNetCore.Http
+@inject IHttpContextAccessor HttpContextAccessor
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"]</title>
+    <style>
+        body {
+            background-image: url("/images/wallpaper_light.png");
+            background-size: 100%;
+            color: black;
+            font-size: 25px;
+        }
+
+        main {
+            padding: 25px;
+        }
+
+        .dark-mode {
+            background-image: url("/images/wallpaper_dark.png");
+            color: white;
+        }
+
+        ul {
+            list-style-type: none;
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            background-color: rgba(255, 255, 255, 0.5);
+        }
+
+        li {
+            float: left;
+        }
+
+            li a {
+                display: block;
+                color: white;
+                text-align: center;
+                padding: 14px 16px;
+                text-decoration: none;
+            }
+
+                li a:hover {
+                    background-color: #111;
+                }
+    </style>
+</head>
+<body>
+    <header>
+        <nav>
+            <div>
+                <ul>
+                    <li>
+                        <a asp-area="" asp-controller="Home" asp-action="Index">Home</a>
+                    </li>
+                    <li>
+                        <a asp-area="" asp-controller="Register" asp-action="Index">Register</a>
+                    </li>
+                    <li>
+                        <!--- Si connecté alors il faut afficher le bouton Logout -->
+                        @{
+                            if (@HttpContextAccessor.HttpContext.Session.GetInt32("Id") is null)
+                            {
+                                <a asp-area="" asp-controller="Login" asp-action="Index">Login</a>
+                            }
+                            else
+                            {
+                                <a asp-area="" asp-controller="Login" asp-action="Logout">Logout</a>
+                            }
+                        }
+
+                    </li>
+                    <li style="float:right;margin-top:5px;margin-right:5px;">
+                        <img onclick="myFunction()" src="~/images/icons/toogle-mode.png" width="50" />
+                    </li>
+                </ul>
+            </div>
+        </nav>
+    </header>
+    <div>
+        <main role="main" class="pb-3">
+            @RenderBody()
+        </main>
+    </div>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+    <script>
+        function myFunction() {
+            var element = document.body;
+            element.classList.toggle("dark-mode");
+        }
+    </script>
+</body>
+</html>
