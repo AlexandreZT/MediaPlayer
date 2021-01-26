@@ -48,6 +48,7 @@ namespace WebApp.Controllers
                     if (!connected)
                     {
                         Debug.WriteLine("Nom d'utilistaur ou mot de passe incorrecte");
+                        ViewData["error"] = "Nom d'utilistaur ou mot de passe incorrecte";
                     }
 
                 }

@@ -1,0 +1,2 @@
+le premier dossier correspond à l'id de l'utilisateur
+le second dossier correspond à l'id de la playlist

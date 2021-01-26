@@ -11,3 +11,5 @@ PM> Remove-Migration
 
 
 PS : Après une migration il faut update la bdd, si la migration est une erreur on peut remove la migration
+
+DbContext method used for CRUD operations

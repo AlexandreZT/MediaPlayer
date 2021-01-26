@@ -15,7 +15,6 @@ namespace WebApp.Controllers
         {
             return View();
         }
-
         // reqûete envoie des informations (username/password) dans la base de donnée (table user)
         // récupère les informations du formulaire
         [HttpPost]
@@ -50,18 +49,21 @@ namespace WebApp.Controllers
                             Password = password
                         });
                         db.SaveChanges();
-                        Debug.WriteLine($"L'utilisateur a bien été ajouté dans la base de donnés");
+                        Debug.WriteLine($"Vous êtes désormais inscrit !");
+                        ViewData["info"] = "Vous êtes désormais inscrit !";
                         // var count = db.SaveChanges();
                         // Debug.WriteLine($"{count} record added");
                     }
                     else
                     {
                         Debug.WriteLine($"Le nom d'utilisateur est déjà prit");
+                        ViewData["info"] = "Le nom d'utilisateur est déjà prit";
                     }
                 }
                 else
                 {
                     Debug.WriteLine($"Les mots de passe sont différents");
+                    ViewData["info"] = "Les mots de passe sont différents";
                 }                  
             }                
             return View("index"); // si mot de passe foiré
