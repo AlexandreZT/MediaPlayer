@@ -4,9 +4,13 @@
 
 <script src="https://unpkg.com/wavesurfer.js"></script>
 
+<div id="currentTrack" style="text-align:center; font:bold; font-size: 36px; color:purple; -webkit-text-stroke: 1px violet;"></div>
+
 <div id="waveform"></div>
 
 <div class="controls" style="text-align:center;">
+    <button onclick="previousTrack()">Previous</button>
+
     <button onclick="skipBackward()">Backward</button>
 
     <button onclick="playPause()">Play/Pause</button>
@@ -14,121 +18,174 @@
     <button onclick="skipForward()">Forward</button>
 
     <button onclick="toggleMute()">Toggle Mute</button>
+
+    <button onclick="nextTrack()">Next</button>
 </div>
 <br />
 
 <!-- Affiche toutes les playlists en music associées d'un utilisteur -->
 <!-- TODO: clique sur le nom d'une playlist pour afficher les musiques qu'elle contient -->
-@{
-    // var userPlaylist = ((List<Playlist>)ViewData["playlists"]).First();
-}
 
 <div style="text-align: center">
-    <form style="width: 30%; display: inline-block; background-color: rgba(255, 255, 255, 0.5);" enctype="multipart/form-data" asp-controller="MusicPlayer" asp-action="PlaylistManagement" method="post">
+    <form id="display" style="width: 30%; display: inline-block;" enctype="multipart/form-data" asp-controller="MusicPlayer" asp-action="PlaylistManagement" method="post">
         <!-- Ajoute une ligne dans la table playlist -->
         <label style="font-size:36px;">Create playlist</label>
-        <button name="action" type="submit" value="AP{0}">@* @userPlaylist.IdUser *@
+        <button name="action" type="submit" value="AP{0}">
             <img src="/images/icons/add.png" style="vertical-align:middle;" width="30" name="file" value="filename" />
         </button>
         <br />
         @foreach (var playlist in ViewData["playlists"] as IList<Playlist>)
         {
-            <label style="font-size:36px;">@playlist.PlaylistTitle</label>
-            <input for="action" type="hidden" name="title" value="" />
+        <!-- Play Playlist -->
 
-            <!-- Update la colonne PlaylistTitle dans la table playlist -->
-            <button name="action" type="submit" value="UP{@playlist.Id}">
-                <img src="/images/icons/edit.png" style="vertical-align: middle;" width="20" />
-            </button>
-            <!-- Supprime une ligne dans la table playlist -->
-            <button name="action" type="submit" value="DP{@playlist.Id}">
-                <img src="/images/icons/delete.png" style="vertical-align: middle;" width="20" />
-            </button>
+        <button type="button" value="@playlist.IdUser">
+            <img src="/images/icons/PLAY.png" onclick="PlayPlaylist(@playlist.Id)" style="vertical-align: middle;" width="20"/>
+        </button>
 
-            <br />
-            @foreach (var music in ViewData["musics"] as IList<Music>)
+        <label style="font-size:36px;">@playlist.PlaylistTitle</label>
+        <input for="action" type="hidden" name="title" value="" />
+
+        <!-- Update la colonne PlaylistTitle dans la table playlist -->
+        <button name="action" type="submit" value="UP{@playlist.Id}">
+            <img src="/images/icons/edit.png" style="vertical-align: middle;" width="20" />
+        </button>
+        <!-- Supprime une ligne dans la table playlist -->
+        <button name="action" type="submit" value="DP{@playlist.Id}">
+            <img src="/images/icons/delete.png" style="vertical-align: middle;" width="20" />
+        </button>
+
+        <br />
+        @foreach (var music in ViewData["musics"] as IList<Music>)
+        {
+            if (playlist.Id == music.IdPlaylist)
             {
-                if (playlist.Id == music.IdPlaylist)
-                {
-                    <label for="action" style="font-size:24px;" name="title" value="title" ondblclick="this.readOnly='';">@music.MusicTitle</label>
-                    <input for="action" type="hidden" name="title" value="" />
-                    <!-- Update la colonne MusicTitle dans la table music -->
+                <label class="@playlist.Id" for="action" style="font-size:24px;" name="title" value="@music.MusicTitle" ondblclick="this.readOnly='';">@music.MusicTitle</label>
+                <input for="action" type="hidden" name="title" value="" />
+                <!-- Update la colonne MusicTitle dans la table music -->
 
-                    <button name="action" type="submit" value="UM{@music.Id}">
-                        <img src="/images/icons/edit.png" style="vertical-align:top;" width="15" />
-                    </button>
+                <button name="action" type="submit" value="UM{@music.Id}">
+                    <img src="/images/icons/edit.png" style="vertical-align:top;" width="15" />
+                </button>
 
-                    <!-- Supprime une ligne dans la table music -->
-                    <button name="action" type="submit" value="DM{@music.Id}">
-                        <img src="/images/icons/delete.png" style="vertical-align:top;" width="15" />
-                    </button>
-                    <br />
-                }
+                <!-- Supprime une ligne dans la table music -->
+                <button name="action" type="submit" value="DM{@music.Id}">
+                    <img src="/images/icons/delete.png" style="vertical-align:top;" width="15" />
+                </button>
+                <br />
             }
-            <!-- Ajoute une ligne dans la table music -->
-            <input for="action" type="file" name="file" value="" />
-            <button name="action" type="submit" value="AM{@playlist.Id}">
-                <img src="/images/icons/add.png" style="vertical-align: middle;" width="20" />
-            </button>
-            <br />
         }
-    </form>
+        <!-- Ajoute une ligne dans la table music -->
+        <input for="action" type="file" name="file" value="" />
+        <button name="action" type="submit" value="AM{@playlist.Id}">
+            <img src="/images/icons/add.png" style="vertical-align: middle;" width="20" />
+        </button>
+        <br />
+        }
+        </form>
 </div>
 
 <script>
-    @*list = [
-        @{
-            string virgule = ",";
-            List<int> playlistFolders = new List<int>();
-            foreach (var playlist in ViewData["playlists"] as IList<Playlist>)
-            {
-                @playlist.Id@virgule    
-            }
-        }     
-    ];*@
-
-    // console.log(list);
-    @*var id = @userPlaylist.IdUser;*@
-
-    // var userFolder = ('/media/' + id + '/');
-    var userFolder = ('/media/' + 'audio.mp3');
-    // console.log(userFolder + list[0] + '/audio.mp3');
-    
     // create : Create an instance, passing the container selector and options:
     var wavesurfer = WaveSurfer.create({
-    container: '#waveform',
-    waveColor: 'violet',
-    progressColor: 'purple'
+        container: '#waveform',
+        waveColor: 'violet',
+        progressColor: 'purple',
+        // responsive: true
     });
 
-    // load : Loads audio from URL via XHR
-    wavesurfer.load(userFolder);
+    var musiclist;
+    var playlistId;
+    var idUser = document.querySelector('button[type="button"]').value;
+    console.log(idUser);
+    var initPlaylist = document.querySelectorAll('button[name="action"]')[1].value;
+    var initPlaylistId = initPlaylist.substring(3, (initPlaylist.length - 1));
+    console.log(initPlaylistId);
+    let indexPlaylist = 0;
+    var initMusiclist = document.getElementsByClassName(initPlaylistId);    
+    console.log(initMusiclist);
 
-    // on : Subscribe to some events
+    let playedSong = function (index = 0, playlist = initPlaylistId, musicList = initMusiclist) {
+        indexPlaylist = index
+        console.log("playedSong before");
+        // currentTrack info
+        document.getElementById("currentTrack").innerHTML = musicList[indexPlaylist].innerHTML;
+        wavesurfer.load('/media/' + idUser + "/" + playlist + "/" + musicList[indexPlaylist].innerHTML);
+        
+        console.log("playedSong after");
+    }
+
     wavesurfer.on('ready', function () { // ready : When audio is loaded, decoded and the waveform drawn.
-        // load : Loads audio from URL via XHR
-        wavesurfer.load(userFolder);
+        console.log("ready before");
         wavesurfer.play();
+        console.log("ready after");
     })
 
+    @*wavesurfer.on('finish', function () {
+        console.log("finish before");
+        playedSong(indexPlaylist+1);
+        console.log("finish after");
+    })*@        
+
+    function PlayPlaylist(getPlaylistId) {
+        playlistId = getPlaylistId;
+        indexPlaylist = 0; // on réinitialise le track
+        musiclist = document.getElementsByClassName(playlistId);             
+        playlistSize = musiclist.length;
+        // media / userId / playlistId / musicTitle  
+        playedSong(indexPlaylist, playlistId, musiclist);
+        //folder = ('/media/' + idUser + "/" + playlistId + "/" + musiclist[indexPlaylist].innerHTML);
+        // currentTrack info
+        //document.getElementById("currentTrack").innerHTML = musiclist[indexPlaylist].innerHTML;
+        // load : Loads audio from URL via XHR
+        //wavesurfer.load(folder);
+        
+        @*// on : Subscribe to some events
+        wavesurfer.on('ready', function () { // ready : When audio is loaded, decoded and the waveform drawn.
+            wavesurfer.load(folder);
+            wavesurfer.play();
+        })*@
+    }
+
+    function previousTrack() {
+        console.log("previousTrack before");        
+        if (indexPlaylist-1 >= 0) {
+            indexPlaylist -= 1;
+        } else {
+            indexPlaylist = playlistSize;
+        }
+        playedSong(indexPlaylist, playlistId, musiclist);
+        console.log("previousTrack after");
+    }
     // Rewind skipLength seconds.
     function skipBackward() {
-    wavesurfer.skipBackward();
+        wavesurfer.skipBackward();
     }
 
     // Plays if paused, pauses if playing.
     function playPause() {
-    wavesurfer.playPause();
+        wavesurfer.playPause();
     }
 
     // Skip ahead skipLength seconds.
     function skipForward() {
-    wavesurfer.skipForward();
+        wavesurfer.skipForward();
     }
     // Toggles the volume on and off.
     function toggleMute() {
-    wavesurfer.toggleMute();
+        wavesurfer.toggleMute();
     }
+
+    function nextTrack() {        
+        console.log("nextTrack before");
+        if (indexPlaylist+1 <= playlistSize) {
+            indexPlaylist += 1;
+        } else {
+            indexPlaylist = 0;
+        }
+        playedSong(indexPlaylist, playlistId, musiclist);
+        console.log("nextTrack after");
+    }
+    // playedSong(indexPlaylist);
 </script>
 
 

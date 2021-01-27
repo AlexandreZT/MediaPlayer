@@ -20,6 +20,10 @@ namespace WebApp.Controllers
         }
         public ActionResult Index()
         {
+            if (HttpContext.Session.GetInt32("Id") is null) // Si on est pas connecté mais qu'on tente d'accdécer à la page à partir d'un lien
+            {
+                return RedirectToAction("Index", "Home"); // On est redirigé à l'accueil
+            }
             IList<Playlist> playlist = new List<Playlist>();
             IList<Music> music = new List<Music>();
             // IDictionary<Music, Playlist> relation = new Dictionary<Music, Playlist>();
@@ -164,8 +168,8 @@ namespace WebApp.Controllers
                         db.Musics.RemoveRange(associatedMusicsInTheRemovedPlaylist);
                         string folder = Path.Combine(_env.WebRootPath, "media/" + userId + "/" + id);
                         Debug.WriteLine(folder);
-                        Debug.WriteLine(file.FileName);
-                        Debug.WriteLine(Directory.EnumerateFiles(folder));
+                        // Debug.WriteLine(file.FileName);
+                        // Debug.WriteLine(Directory.EnumerateFiles(folder));
                     }                        
                     catch (Exception)
                     {
@@ -208,7 +212,7 @@ namespace WebApp.Controllers
                         db.Musics.Update(renameMusic);
                         string path = Path.Combine(_env.WebRootPath, "media/" + userId + "/" + playlistId + "/");
                         FileInfo updateFile = new System.IO.FileInfo(path + oldMusicTitle);
-                        updateFile.MoveTo(path + title);                       
+                        updateFile.MoveTo(path + title);     // attention s'il est inUse à ne pas supprimer -> correction à faire                  
                         db.SaveChanges();
                     }
                     
@@ -226,6 +230,9 @@ namespace WebApp.Controllers
                     }
                     Debug.WriteLine("Delete music");
                     break;
+                case "PP":
+                    Debug.WriteLine("Play playlist");
+                    break;
                 default:
                     Debug.WriteLine("Playlist Management action not recognized");
                     break;  
@@ -239,23 +246,28 @@ namespace WebApp.Controllers
             return View();
         }
 
-        // récupérer les playlist de la base de données (table playlist)
+        public ActionResult PlayPlaylist()
+        {
+
+            Debug.WriteLine("ok pp");
+            return View();
+        }
+
         // récupérer les musique associés aux playlist (table music)
-        // [HttpGet]
-        /*public ActionResult Playlist()
+        /*[HttpGet]
+        public ActionResult getMusicFromPlaylist(int playlistId)
         {
             using (var db = new WebAppDbContext())
             {
-                foreach (var Playlist in db.Playlists)
+                foreach (var Music in db.Musics)
                 {
-                    Debug.WriteLine($"{Playlist}");
-
-                    foreach (var Music in db.Musics)
+                    if (playlistId == Music.IdPlaylist)
                     {
-                        Debug.WriteLine($"{Music}");
+                        Debug.WriteLine($"{Music.MusicTitle}");
                     }
                 }
             }
+            return RedirectToAction("Index", "MusicPlayer");
         }*/
     }
 }
