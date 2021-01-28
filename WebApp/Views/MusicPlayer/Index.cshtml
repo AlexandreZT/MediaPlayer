@@ -109,8 +109,8 @@
         console.log("playedSong before");
         // currentTrack info
         document.getElementById("currentTrack").innerHTML = musicList[indexPlaylist].innerHTML;
-        wavesurfer.load('/media/' + idUser + "/" + playlist + "/" + musicList[indexPlaylist].innerHTML);
-        
+        // media / userId / playlistId / musicTitle  
+        wavesurfer.load('/media/' + idUser + "/" + playlist + "/" + musicList[indexPlaylist].innerHTML);        
         console.log("playedSong after");
     }
 
@@ -120,30 +120,23 @@
         console.log("ready after");
     })
 
-    @*wavesurfer.on('finish', function () {
+    wavesurfer.on('finish', function () {
         console.log("finish before");
-        playedSong(indexPlaylist+1);
+        if (indexPlaylist + 1 < playlistSize) {
+            indexPlaylist += 1;
+        } else {
+            indexPlaylist = 0;
+        }
+        playedSong(indexPlaylist, playlistId, musiclist);
         console.log("finish after");
-    })*@        
+    })        
 
     function PlayPlaylist(getPlaylistId) {
         playlistId = getPlaylistId;
-        indexPlaylist = 0; // on réinitialise le track
+        indexPlaylist = 0; // lorsqu'on change de playlist on commence au 1er track
         musiclist = document.getElementsByClassName(playlistId);             
-        playlistSize = musiclist.length;
-        // media / userId / playlistId / musicTitle  
+        playlistSize = musiclist.length;        
         playedSong(indexPlaylist, playlistId, musiclist);
-        //folder = ('/media/' + idUser + "/" + playlistId + "/" + musiclist[indexPlaylist].innerHTML);
-        // currentTrack info
-        //document.getElementById("currentTrack").innerHTML = musiclist[indexPlaylist].innerHTML;
-        // load : Loads audio from URL via XHR
-        //wavesurfer.load(folder);
-        
-        @*// on : Subscribe to some events
-        wavesurfer.on('ready', function () { // ready : When audio is loaded, decoded and the waveform drawn.
-            wavesurfer.load(folder);
-            wavesurfer.play();
-        })*@
     }
 
     function previousTrack() {
@@ -151,7 +144,7 @@
         if (indexPlaylist-1 >= 0) {
             indexPlaylist -= 1;
         } else {
-            indexPlaylist = playlistSize;
+            indexPlaylist = playlistSize-1;
         }
         playedSong(indexPlaylist, playlistId, musiclist);
         console.log("previousTrack after");
@@ -177,7 +170,7 @@
 
     function nextTrack() {        
         console.log("nextTrack before");
-        if (indexPlaylist+1 <= playlistSize) {
+        if (indexPlaylist+1 < playlistSize) {
             indexPlaylist += 1;
         } else {
             indexPlaylist = 0;

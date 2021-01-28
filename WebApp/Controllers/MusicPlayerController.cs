@@ -212,7 +212,7 @@ namespace WebApp.Controllers
                         db.Musics.Update(renameMusic);
                         string path = Path.Combine(_env.WebRootPath, "media/" + userId + "/" + playlistId + "/");
                         FileInfo updateFile = new System.IO.FileInfo(path + oldMusicTitle);
-                        updateFile.MoveTo(path + title);     // attention s'il est inUse à ne pas supprimer -> correction à faire                  
+                        updateFile.MoveTo(path + title);     // attention s'il est inUse à ne pas supprimer/modifier -> correction à faire                  
                         db.SaveChanges();
                     }
                     
