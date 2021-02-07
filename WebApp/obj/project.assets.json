@@ -6179,11 +6179,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\AlexZ\\OneDrive\\Bureau\\WebApp\\WebApp\\WebApp.csproj",
-      "projectName": "WebApp",
-      "projectPath": "C:\\Users\\AlexZ\\OneDrive\\Bureau\\WebApp\\WebApp\\WebApp.csproj",
+      "projectUniqueName": "C:\\Users\\AlexZ\\OneDrive\\Bureau\\MediaPlayer\\WebApp\\MediaPlayer.csproj",
+      "projectName": "MediaPlayer",
+      "projectPath": "C:\\Users\\AlexZ\\OneDrive\\Bureau\\MediaPlayer\\WebApp\\MediaPlayer.csproj",
       "packagesPath": "C:\\Users\\AlexZ\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\AlexZ\\OneDrive\\Bureau\\WebApp\\WebApp\\obj\\",
+      "outputPath": "C:\\Users\\AlexZ\\OneDrive\\Bureau\\MediaPlayer\\WebApp\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "C:\\Users\\AlexZ\\AppData\\Roaming\\NuGet\\NuGet.Config",

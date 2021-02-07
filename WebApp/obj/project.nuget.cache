@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "4jvbPJFGQLgVLV1jCVZSxlm4K2FA3q7edo5UMPsKBWN0Dn1OQL/bGO57GV87IIYXzpRwDeEdMFsR+Xq6+Wzqmw==",
+  "dgSpecHash": "qQTDpeq2pMDBmJI/xga1+ioadPFt2ua7LuoGpKYSBiE1tk72ff3cNz5uIVxiUN6wAt9PuPPJprR90OtA0S7aYg==",
   "success": true,
-  "projectFilePath": "C:\\Users\\AlexZ\\OneDrive\\Bureau\\WebApp\\WebApp\\WebApp.csproj",
+  "projectFilePath": "C:\\Users\\AlexZ\\OneDrive\\Bureau\\MediaPlayer\\WebApp\\MediaPlayer.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\AlexZ\\.nuget\\packages\\humanizer.core\\2.8.26\\humanizer.core.2.8.26.nupkg.sha512",
     "C:\\Users\\AlexZ\\.nuget\\packages\\microsoft.aspnetcore.cryptography.internal\\2.2.0\\microsoft.aspnetcore.cryptography.internal.2.2.0.nupkg.sha512",

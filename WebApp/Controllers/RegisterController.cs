@@ -2,12 +2,12 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using WebApp.Models;
+using MediaPlayer.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
 
-namespace WebApp.Controllers
+namespace MediaPlayer.Controllers
 {
     public class RegisterController : Controller
     {
@@ -24,7 +24,7 @@ namespace WebApp.Controllers
             Debug.WriteLine($"Button Register working !");
             Debug.WriteLine($"{username}, {password}, {repassword}");
 
-            using (var db = new WebAppDbContext())
+            using (var db = new MediaPlayerDbContext())
             {
                 // check if password and the confirmation and the same
                 if (password == repassword)

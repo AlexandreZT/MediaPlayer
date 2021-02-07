@@ -6,11 +6,11 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using WebApp.Models;
+using MediaPlayer.Models;
 // using Microsoft.AspNetCore.Session.SessionMiddleware;
 // using Microsoft.AspNetCore.Session.ISessionStore;
 
-namespace WebApp
+namespace MediaPlayer
 {
     public class Program
     {

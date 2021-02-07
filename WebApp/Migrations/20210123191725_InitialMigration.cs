@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore.Migrations;
 
-namespace WebApp.Migrations
+namespace MediaPlayer.Migrations
 {
     public partial class InitialMigration : Migration
     {

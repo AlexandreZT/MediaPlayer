@@ -2,13 +2,13 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using WebApp.Models;
+using MediaPlayer.Models;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using System.IO;
 using System.Diagnostics;
 
-namespace WebApp.Controllers
+namespace MediaPlayer.Controllers
 {
     public class MusicPlayerController : Controller
     {
@@ -29,7 +29,7 @@ namespace WebApp.Controllers
             // IDictionary<Music, Playlist> relation = new Dictionary<Music, Playlist>();
             // ref id user <-> playlist / ref id playlit <-> music
 
-            using var db = new WebAppDbContext();            
+            using var db = new MediaPlayerDbContext();            
             foreach (var Playlist in db.Playlists)
             {
                 if (Playlist.IdUser == HttpContext.Session.GetInt32("Id"))
@@ -42,7 +42,7 @@ namespace WebApp.Controllers
                     });
                 }
 
-                using var db2 = new WebAppDbContext();
+                using var db2 = new MediaPlayerDbContext();
                 foreach (var Music in db2.Musics)
                 {
                     if (Music.IdPlaylist == Playlist.Id)
@@ -80,30 +80,19 @@ namespace WebApp.Controllers
             Debug.WriteLine(code);
             Debug.WriteLine(id);
             var userId = HttpContext.Session.GetInt32("Id");
-            using var db = new WebAppDbContext();
+            using var db = new MediaPlayerDbContext();
             
-            switch (code) // les deux premier caractère designe l'action
+            switch (code) // les deux premier caractère désignent l'action
             {                
                 case "AP":
-                    if (String.IsNullOrEmpty(title))
+                    if (String.IsNullOrEmpty(title)) // si on ne donne pas de nom à la playlist lors de sa création
                     {
-                        title = "Untitled playlist";
+                        title = "Untitled playlist"; // on lui en donne un par défaut
                     }
                     /*
                      * On récupère l'id courant, et on ajoute le nom passé en valeur
                      */
-                        /*var playlistTitleAlreadyTaken = false;
-                        foreach (var playlist in db.Playlists)
-                        {
-                            if (userId == playlist.IdUser)
-                            {
-                                if (newPlaylistTitle == playlist.PlaylistTitle)
-                                {
-                                    playlistTitleAlreadyTaken = true;
-                                }    
-                            }
-                        }*/
-                    if (true) // !playlistTitleAlreadyTaken
+                    if (true)
                     {
                         db.Playlists.AddRange(
                         new Playlist
@@ -115,21 +104,8 @@ namespace WebApp.Controllers
                     }
                     Debug.WriteLine("Create playlist");                    
                     break;
-                case "UP":
-                    var newPlaylistTitleIsTaken = false;
-
-                    /*foreach (var playlist in db.Playlists)
-                    {
-                        if (userId == playlist.IdUser)
-                        {
-                            if (title == playlist.PlaylistTitle)
-                            {
-                                newPlaylistTitleIsTaken = true;
-                            }
-                        }
-                    }*/
-                    
-                    if (newPlaylistTitleIsTaken == false && (!String.IsNullOrEmpty(title)))
+                case "UP":                  
+                    if (!String.IsNullOrEmpty(title))
                     {
                         Playlist updatePlaylist = db.Playlists.Where(a => a.Id == id && a.IdUser == userId).ToArray()[0];
                         updatePlaylist.PlaylistTitle = title;
@@ -170,6 +146,7 @@ namespace WebApp.Controllers
                         Debug.WriteLine(folder);
                         // Debug.WriteLine(file.FileName);
                         // Debug.WriteLine(Directory.EnumerateFiles(folder));
+                        // il faut supprimer les fichiers du dossier playlist local avant de le supprimer
                     }                        
                     catch (Exception)
                     {
@@ -179,46 +156,64 @@ namespace WebApp.Controllers
 
                     Debug.WriteLine("Delete playlist");
                     break;
-                case "AM":                                         
+                case "AM":                    
                     if (file != null && !String.IsNullOrEmpty(file.FileName))
                     {
-                        string folder = Path.Combine(_env.WebRootPath, "media/" + userId + "/" + id);
-                        Debug.WriteLine(folder);
-                        Debug.WriteLine(file.FileName);
-                        if (!Directory.Exists(folder))
+                        string extension = Path.GetExtension(file.FileName);
+                        if (extension == ".mp3" || extension == ".wav")
                         {
-                            Directory.CreateDirectory(folder);                            
+                            string folder = Path.Combine(_env.WebRootPath, "media/" + userId + "/" + id);
+                            Debug.WriteLine(folder);
+                            Debug.WriteLine(file.FileName);
+                            if (!Directory.Exists(folder))
+                            {
+                                Directory.CreateDirectory(folder);
+                            }
+
+                            string path = Path.Combine(folder, file.FileName);
+
+                            using (var dispose = new FileStream(Path.Combine(folder, file.FileName), FileMode.Create))
+                            {
+                                file.CopyTo(dispose);
+                            }
+
+                            db.Musics.AddRange(
+                            new Music
+                            {
+                                MusicTitle = file.FileName,
+                                IdPlaylist = id
+                            });
+                            db.SaveChanges();
                         }
-
-                        file.CopyTo(new FileStream(Path.Combine(folder, file.FileName), FileMode.Create));
-
-                        db.Musics.AddRange(
-                        new Music
+                        else
                         {
-                            MusicTitle = file.FileName,
-                            IdPlaylist = id
-                        });
-                        db.SaveChanges();
-                    }
+                            Debug.WriteLine("Le format de fichier n'est pas prit en charge, uniquement .mp3 ou. wav");
+                        }
+                    }                        
                     Debug.WriteLine("Add music");
                     break;
                 case "UM":
                     if (!String.IsNullOrEmpty(title))
                     {
-                        Music renameMusic = db.Musics.Where(a => a.Id == id).ToArray()[0];
-                        string oldMusicTitle = renameMusic.MusicTitle;
-                        var playlistId = renameMusic.IdPlaylist;
-                        renameMusic.MusicTitle = title;
-                        db.Musics.Update(renameMusic);
-                        string path = Path.Combine(_env.WebRootPath, "media/" + userId + "/" + playlistId + "/");
-                        FileInfo updateFile = new System.IO.FileInfo(path + oldMusicTitle);
-                        updateFile.MoveTo(path + title);     // attention s'il est inUse à ne pas supprimer/modifier -> correction à faire                  
-                        db.SaveChanges();
+                        try
+                        {
+                            Music renameMusic = db.Musics.Where(a => a.Id == id).ToArray()[0];
+                            string oldMusicTitle = renameMusic.MusicTitle;
+                            var playlistId = renameMusic.IdPlaylist;
+                            renameMusic.MusicTitle = title;
+                            db.Musics.Update(renameMusic);
+                            string path = Path.Combine(_env.WebRootPath, "media/" + userId + "/" + playlistId + "/");
+                            FileInfo updateFile = new System.IO.FileInfo(path + oldMusicTitle);
+
+                            updateFile.MoveTo(path + title);                
+                            db.SaveChanges();
+                        } catch(Exception e)
+                        {
+                            Debug.WriteLine(e);
+                        }
+                        
                     }
-                    
-                    // check oldMusicTitle
-                    // changes with title
-                    // renameMusic.IdPlaylist;
+
                     Debug.WriteLine("Rename music");
                     break;
                 case "DM":
@@ -230,44 +225,11 @@ namespace WebApp.Controllers
                     }
                     Debug.WriteLine("Delete music");
                     break;
-                case "PP":
-                    Debug.WriteLine("Play playlist");
-                    break;
                 default:
                     Debug.WriteLine("Playlist Management action not recognized");
                     break;  
             }
             return RedirectToAction("Index", "MusicPlayer");
-        }
-
-        [HttpPost]
-        public ActionResult UploadMusicInSelectedPlaylist()
-        {
-            return View();
-        }
-
-        public ActionResult PlayPlaylist()
-        {
-
-            Debug.WriteLine("ok pp");
-            return View();
-        }
-
-        // récupérer les musique associés aux playlist (table music)
-        /*[HttpGet]
-        public ActionResult getMusicFromPlaylist(int playlistId)
-        {
-            using (var db = new WebAppDbContext())
-            {
-                foreach (var Music in db.Musics)
-                {
-                    if (playlistId == Music.IdPlaylist)
-                    {
-                        Debug.WriteLine($"{Music.MusicTitle}");
-                    }
-                }
-            }
-            return RedirectToAction("Index", "MusicPlayer");
-        }*/
+        }       
     }
 }

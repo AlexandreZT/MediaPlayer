@@ -1,6 +1,6 @@
 using System;
 
-namespace WebApp.Models
+namespace MediaPlayer.Models
 {
     public class ErrorViewModel
     {

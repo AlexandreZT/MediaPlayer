@@ -4,11 +4,11 @@ using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using WebApp.Models;
+using MediaPlayer.Models;
 
-namespace WebApp.Migrations
+namespace MediaPlayer.Migrations
 {
-    [DbContext(typeof(WebAppDbContext))]
+    [DbContext(typeof(MediaPlayerDbContext))]
     [Migration("20210123191725_InitialMigration")]
     partial class InitialMigration
     {
@@ -20,7 +20,7 @@ namespace WebApp.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("ProductVersion", "5.0.2");
 
-            modelBuilder.Entity("WebApp.Models.Music", b =>
+            modelBuilder.Entity("MediaPlayer.Models.Music", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -38,7 +38,7 @@ namespace WebApp.Migrations
                     b.ToTable("Musics");
                 });
 
-            modelBuilder.Entity("WebApp.Models.Playlist", b =>
+            modelBuilder.Entity("MediaPlayer.Models.Playlist", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -56,7 +56,7 @@ namespace WebApp.Migrations
                     b.ToTable("Playlists");
                 });
 
-            modelBuilder.Entity("WebApp.Models.User", b =>
+            modelBuilder.Entity("MediaPlayer.Models.User", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()

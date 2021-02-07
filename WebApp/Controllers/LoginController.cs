@@ -1,5 +1,5 @@
 ﻿using System.Linq;
-using WebApp.Models;
+using MediaPlayer.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -7,7 +7,7 @@ using System;
 using System.Diagnostics;
 
 
-namespace WebApp.Controllers
+namespace MediaPlayer.Controllers
 {
     public class LoginController : Controller
     {
@@ -27,7 +27,7 @@ namespace WebApp.Controllers
         {
             Debug.WriteLine("Button Login working !");
 
-            using (var db = new WebAppDbContext())
+            using (var db = new MediaPlayerDbContext())
             {
                 var connected = false;
                 foreach (var User in db.Users) // peut être optimisé imo

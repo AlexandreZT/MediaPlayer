@@ -6,9 +6,9 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
-using WebApp.Models;
+using MediaPlayer.Models;
 
-namespace WebApp.Controllers
+namespace MediaPlayer.Controllers
 {
     public class HomeController : Controller
     {

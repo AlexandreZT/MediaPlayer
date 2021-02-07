@@ -9,17 +9,29 @@
 <div id="waveform"></div>
 
 <div class="controls" style="text-align:center;">
-    <button onclick="previousTrack()">Previous</button>
+    <button onclick="previousTrack()">
+        <img src="/images/icons/Previous.png" style="vertical-align: middle;" width="50"/>
+    </button>
 
-    <button onclick="skipBackward()">Backward</button>
+    <button onclick="skipBackward()">
+        <img src="/images/icons/Backward.png" style="vertical-align: middle;" width="50"/>
+    </button>
 
-    <button onclick="playPause()">Play/Pause</button>
+    <button onclick="playPause()">
+        <img src="/images/icons/PlayPause.png" style="vertical-align: middle;" width="50"/>
+    </button>
 
-    <button onclick="skipForward()">Forward</button>
+    <button onclick="skipForward()">
+        <img src="/images/icons/Forward.png" style="vertical-align: middle;" width="50"/>
+    </button>
 
-    <button onclick="toggleMute()">Toggle Mute</button>
+    <button onclick="toggleMute()">
+        <img src="/images/icons/Sound.png" style="vertical-align: middle;" width="50"/>
+    </button>
 
-    <button onclick="nextTrack()">Next</button>
+    <button onclick="nextTrack()">
+        <img src="/images/icons/Next.png" style="vertical-align: middle;" width="50"/>
+    </button>
 </div>
 <br />
 
@@ -38,20 +50,20 @@
         {
         <!-- Play Playlist -->
 
-        <button type="button" value="@playlist.IdUser">
-            <img src="/images/icons/PLAY.png" onclick="PlayPlaylist(@playlist.Id)" style="vertical-align: middle;" width="20"/>
+        <button type="button" value="@playlist.IdUser" style="vertical-align:middle;">
+            <img src="/images/icons/Play.png" onclick="PlayPlaylist(@playlist.Id)" width="30"/>
         </button>
 
         <label style="font-size:36px;">@playlist.PlaylistTitle</label>
         <input for="action" type="hidden" name="title" value="" />
 
         <!-- Update la colonne PlaylistTitle dans la table playlist -->
-        <button name="action" type="submit" value="UP{@playlist.Id}">
-            <img src="/images/icons/edit.png" style="vertical-align: middle;" width="20" />
+        <button name="action" type="submit" value="UP{@playlist.Id}" style="vertical-align:middle;">
+            <img src="/images/icons/Edit.png" width="30" />
         </button>
         <!-- Supprime une ligne dans la table playlist -->
-        <button name="action" type="submit" value="DP{@playlist.Id}">
-            <img src="/images/icons/delete.png" style="vertical-align: middle;" width="20" />
+        <button name="action" type="submit" value="DP{@playlist.Id}" style="vertical-align:middle;">
+            <img src="/images/icons/Delete.png" width="30" />
         </button>
 
         <br />
@@ -63,13 +75,13 @@
                 <input for="action" type="hidden" name="title" value="" />
                 <!-- Update la colonne MusicTitle dans la table music -->
 
-                <button name="action" type="submit" value="UM{@music.Id}">
-                    <img src="/images/icons/edit.png" style="vertical-align:top;" width="15" />
+                <button name="action" type="submit" value="UM{@music.Id}" style="vertical-align:middle;">
+                    <img src="/images/icons/edit.png" width="20" />
                 </button>
 
                 <!-- Supprime une ligne dans la table music -->
-                <button name="action" type="submit" value="DM{@music.Id}">
-                    <img src="/images/icons/delete.png" style="vertical-align:top;" width="15" />
+                <button name="action" type="submit" value="DM{@music.Id}" style="vertical-align: middle;">
+                    <img src="/images/icons/delete.png" width="20" />
                 </button>
                 <br />
             }
@@ -77,7 +89,7 @@
         <!-- Ajoute une ligne dans la table music -->
         <input for="action" type="file" name="file" value="" />
         <button name="action" type="submit" value="AM{@playlist.Id}">
-            <img src="/images/icons/add.png" style="vertical-align: middle;" width="20" />
+            <img src="/images/icons/Add.png" style="vertical-align: middle;" width="20" />
         </button>
         <br />
         }
@@ -191,17 +203,15 @@
             input.value = oldValue;
             input.onblur = function () { // après être sorti du mode edit
                 var hiddenInput = document.querySelector('input[type="hidden"]');
-
+                // si on voit qu'il n'y a rien dans le champs, on remet la valeur initial
                 if (this.value != "") {
                     var newValue = this.value;
                     this.parentNode.innerHTML = newValue;
                     hiddenInput.value = newValue;
-                } else {
+                } else { // sinon on garde la nouvelle valeur
                     this.parentNode.innerHTML = oldValue;
                     hiddenInput.value = oldValue;
                 }
-                // hiddenInput.createElement("name").value = "test"; // creation element name
-
             } // fin blur
             this.innerHTML = "";
             this.appendChild(input);

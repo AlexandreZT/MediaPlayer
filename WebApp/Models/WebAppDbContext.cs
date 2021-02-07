@@ -2,9 +2,9 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.SqlServer;
 
-namespace WebApp.Models
+namespace MediaPlayer.Models
 {
-    public class WebAppDbContext : DbContext
+    public class MediaPlayerDbContext : DbContext
     {
         public DbSet <User> Users { get; set; }
         public DbSet <Music> Musics { get; set; }
